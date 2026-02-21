@@ -57,7 +57,17 @@ export function DashboardView({
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-4 md:p-6">
+      <section className="rounded-xl border border-border/70 bg-card/30 p-4 md:p-5">
+        <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">CFO Command Centre</p>
+        <h2 className="mt-2 text-2xl font-semibold md:text-3xl">
+          {account.business_name}, here&apos;s your <span className="text-gradient">live financial posture</span>.
+        </h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Updated continuously from Monzo, invoices, and active incident streams.
+        </p>
+      </section>
+
       <CrisisBanner
         riskLevel={account.risk_level}
         runwayDays={runwayDays}

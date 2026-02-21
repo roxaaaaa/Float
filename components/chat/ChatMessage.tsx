@@ -18,7 +18,12 @@ export function ChatMessage({
           <AvatarFallback>F</AvatarFallback>
         </Avatar>
       )}
-      <div className={cn("max-w-[76%] rounded-2xl border px-4 py-3 text-sm", user ? "rounded-br-md bg-primary text-primary-foreground" : "rounded-bl-md bg-card")}>
+      <div
+        className={cn(
+          "max-w-[82%] rounded-2xl border px-4 py-3 text-sm leading-relaxed shadow-sm",
+          user ? "rounded-br-md border-primary/50 bg-primary text-primary-foreground" : "rounded-bl-md border-border/70 bg-card/90",
+        )}
+      >
         <p>{content}</p>
         <p className={cn("mt-2 text-[10px]", user ? "text-primary-foreground/75" : "text-muted-foreground")}>
           {new Date(createdAt).toLocaleTimeString()}

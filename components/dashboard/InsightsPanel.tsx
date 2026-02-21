@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, AlertTriangle, CheckCircle2, Info, RefreshCw, X } from "lucide-react";
 
 import type { AIInsight } from "@/lib/types";
@@ -28,30 +29,39 @@ export function InsightsPanel({
   onDismiss?: (insight: AIInsight) => void;
 }) {
   return (
-    <Card>
+    <Card className="border-border/70 bg-card/80">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Float AI Insights</CardTitle>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" className="rounded-lg">
           <RefreshCw className="h-4 w-4" />
         </Button>
       </CardHeader>
       <CardContent className="space-y-3">
         {insights.length === 0 && <p className="text-sm text-muted-foreground">No active insights.</p>}
-        {insights.map((insight) => (
-          <div key={insight.id} className={`rounded-lg border bg-card p-3 ${borderFor(insight.type)}`}>
-            <div className="mb-2 flex items-start justify-between gap-3">
-              <div className="flex items-center gap-2">
-                {iconFor(insight.type)}
-                <h4 className="text-sm font-semibold">{insight.title}</h4>
+        <AnimatePresence mode="popLayout">
+          {insights.map((insight) => (
+            <motion.div
+              key={insight.id}
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className={`rounded-lg border bg-card p-3 ${borderFor(insight.type)}`}
+            >
+              <div className="mb-2 flex items-start justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  {iconFor(insight.type)}
+                  <h4 className="text-sm font-semibold">{insight.title}</h4>
+                </div>
+                <button className="text-muted-foreground hover:text-foreground" onClick={() => onDismiss?.(insight)}>
+                  <X className="h-3.5 w-3.5" />
+                </button>
               </div>
-              <button className="text-muted-foreground hover:text-foreground" onClick={() => onDismiss?.(insight)}>
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </div>
-            <p className="text-xs text-muted-foreground">{insight.message}</p>
-            {insight.action_label && <Button className="mt-3 h-8 text-xs">{insight.action_label}</Button>}
-          </div>
-        ))}
+              <p className="text-xs text-muted-foreground">{insight.message}</p>
+              {insight.action_label && <Button className="mt-3 h-8 text-xs">{insight.action_label}</Button>}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </CardContent>
     </Card>
   );

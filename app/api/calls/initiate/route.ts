@@ -16,22 +16,39 @@ const bodySchema = z.object({
   business_name: z.string().min(1),
   payment_link: z.string().url(),
   notes: z.string().optional(),
+  persist_contact: z.boolean().optional(),
 });
 
 export async function POST(request: NextRequest) {
-  const body = bodySchema.parse(await request.json());
+  const rawBody = await request.json();
+  const parsedBody = bodySchema.safeParse(rawBody);
+  if (!parsedBody.success) {
+    return NextResponse.json({ error: parsedBody.error.flatten() }, { status: 400 });
+  }
+
+  const body = parsedBody.data;
   const accountId = await requireAccountId();
   const admin = createAdminClient();
 
-  const callResult = await initiateElevenLabsTwilioCall({
-    to: body.client_phone,
-    clientName: body.client_name,
-    businessName: body.business_name,
-    invoiceNumber: body.invoice_number ?? "INV",
-    amount: body.amount,
-    paymentLink: body.payment_link,
-    notes: body.notes,
-  });
+  let callResult;
+  try {
+    callResult = await initiateElevenLabsTwilioCall({
+      to: body.client_phone,
+      clientName: body.client_name,
+      businessName: body.business_name,
+      invoiceNumber: body.invoice_number ?? "INV",
+      amount: body.amount,
+      paymentLink: body.payment_link,
+      notes: body.notes,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : "Failed to initiate ElevenLabs call.",
+      },
+      { status: 502 },
+    );
+  }
 
   const callInsert = {
     account_id: accountId,
@@ -41,8 +58,8 @@ export async function POST(request: NextRequest) {
     call_sid: callResult.call_sid,
     elevenlabs_conversation_id: callResult.elevenlabs_conversation_id,
     status: callResult.status,
-    outcome: callResult.mode === "simulated" ? "Simulated call started" : null,
-    transcript: callResult.mode === "simulated" ? "Simulation mode enabled due to missing provider configuration." : null,
+    outcome: callResult.mode === "simulated" ? "Simulated call started" : callResult.message,
+    transcript: callResult.mode === "simulated" ? callResult.message : null,
     initiated_at: new Date().toISOString(),
   };
 
@@ -51,7 +68,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: callError.message }, { status: 500 });
   }
 
-  await admin.from("invoices").update({ status: "chasing", call_initiated_at: new Date().toISOString() }).eq("id", body.invoice_id);
+  const invoiceUpdate: Record<string, unknown> = {
+    status: "chasing",
+    call_initiated_at: new Date().toISOString(),
+    call_sid: callResult.call_sid,
+  };
+  if (body.persist_contact ?? true) {
+    invoiceUpdate.client_name = body.client_name.trim();
+    invoiceUpdate.client_phone = body.client_phone.trim();
+  }
+
+  await admin.from("invoices").update(invoiceUpdate).eq("id", body.invoice_id);
 
   const { data: incident } = await admin
     .from("incidents")
@@ -67,6 +94,8 @@ export async function POST(request: NextRequest) {
   });
   const callEvent = createIncidentEvent("CALL_INITIATED", `AI call initiated to ${body.client_name} (${body.client_phone})`, {
     call_sid: callResult.call_sid,
+    elevenlabs_conversation_id: callResult.elevenlabs_conversation_id,
+    provider_message: callResult.message,
     simulated: callResult.mode === "simulated",
   });
 

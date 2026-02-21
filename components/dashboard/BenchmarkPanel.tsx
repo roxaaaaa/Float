@@ -17,7 +17,7 @@ export function BenchmarkPanel({
   title: string;
 }) {
   return (
-    <Card>
+    <Card className="border-border/70 bg-card/80">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Industry Benchmarks</CardTitle>
         <Badge variant="secondary">{title}</Badge>

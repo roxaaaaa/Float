@@ -1,5 +1,6 @@
 "use client";
 
+import { differenceInDays } from "date-fns";
 import { MoreHorizontal, Phone, Upload } from "lucide-react";
 
 import type { Invoice } from "@/lib/types";
@@ -26,8 +27,10 @@ export function InvoiceTable({
   onChase?: (invoice: Invoice) => void;
   onSendLink?: (invoice: Invoice) => void;
 }) {
+  const today = new Date();
+
   return (
-    <Card id="invoices">
+    <Card id="invoices" className="border-border/70 bg-card/80">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Invoices</CardTitle>
         <div className="flex gap-2">
@@ -46,17 +49,21 @@ export function InvoiceTable({
               <TableHead>Invoice #</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Due Date</TableHead>
+              <TableHead>Days Overdue</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {invoices.map((invoice) => (
-              <TableRow key={invoice.id}>
+              <TableRow key={invoice.id} className="hover:bg-secondary/30">
                 <TableCell>{invoice.client_name}</TableCell>
                 <TableCell className="font-mono text-xs">{invoice.invoice_number ?? "-"}</TableCell>
                 <TableCell>EUR {(invoice.amount / 100).toFixed(2)}</TableCell>
                 <TableCell>{invoice.due_date ?? "-"}</TableCell>
+                <TableCell className="text-xs text-muted-foreground">
+                  {invoice.due_date ? Math.max(0, differenceInDays(today, new Date(invoice.due_date))) : "-"}
+                </TableCell>
                 <TableCell>{statusBadge(invoice.status)}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">

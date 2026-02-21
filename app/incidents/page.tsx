@@ -22,26 +22,29 @@ export default function IncidentsPage() {
 
   return (
     <AppShell title="Financial Incidents" businessName="The Cobblestone Kitchen" monzoConnected>
-      <div className="space-y-6 p-6">
+      <div className="space-y-6 p-4 md:p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">Financial Incidents</h2>
+          <div>
+            <h2 className="text-2xl font-semibold">Financial Incidents</h2>
+            <p className="text-sm text-muted-foreground">Live risk timeline with event-by-event resolution tracking.</p>
+          </div>
           <Badge variant="warning">{incidents.filter((i) => i.status !== "resolved").length} Open</Badge>
         </div>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          <Card>
+          <Card className="border-border/70 bg-card/80">
             <CardContent className="p-4">
               <p className="text-xs text-muted-foreground">Total incidents</p>
               <p className="text-2xl font-semibold">{stats.total}</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border-border/70 bg-card/80">
             <CardContent className="p-4">
               <p className="text-xs text-muted-foreground">Resolved within 1 hour</p>
               <p className="text-2xl font-semibold">{stats.resolvedPct}%</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border-border/70 bg-card/80">
             <CardContent className="p-4">
               <p className="text-xs text-muted-foreground">Total money recovered</p>
               <p className="text-2xl font-semibold">EUR {(stats.recovered / 100).toFixed(2)}</p>

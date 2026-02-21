@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Sparkles } from "lucide-react";
 
 import { AppShell } from "@/components/layout/AppShell";
@@ -73,17 +73,17 @@ export default function ChatPage() {
 
   return (
     <AppShell title="AI Chat" businessName="The Cobblestone Kitchen" monzoConnected>
-      <div className="flex h-[calc(100vh-60px)] flex-col p-6">
+      <div className="flex h-[calc(100vh-60px)] flex-col p-4 md:p-6">
         <div className="mb-3 rounded-lg border border-border/70 bg-card/70 px-3 py-2 text-xs text-muted-foreground">
-          Using: 90 days transactions - open invoices - projections - incidents
+          Using: 90 days transactions - 2 open invoices - latest balance - updated 2m ago
         </div>
 
-        <Card className="flex-1">
+        <Card className="flex-1 border-border/70 bg-card/60">
           <CardContent className="flex h-full flex-col gap-4 p-4">
             <ScrollArea className="h-[calc(100vh-280px)] pr-2">
               <div className="space-y-3">
                 {messages.length === 0 ? (
-                  <div className="mx-auto mt-16 max-w-xl space-y-5 text-center">
+                  <div className="mx-auto mt-12 max-w-xl space-y-5 text-center">
                     <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/20">
                       <Sparkles className="h-6 w-6 text-primary" />
                     </div>
