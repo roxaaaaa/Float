@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 216 31% 7%;
+  --foreground: 210 40% 96%;
+  --card: 215 28% 10%;
+  --card-foreground: 210 40% 98%;
+  --popover: 215 28% 10%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 204 95% 56%;
+  --primary-foreground: 210 50% 98%;
+  --secondary: 217 26% 14%;
+  --secondary-foreground: 210 40% 96%;
+  --muted: 217 24% 16%;
+  --muted-foreground: 215 16% 70%;
+  --accent: 16 98% 63%;
+  --accent-foreground: 210 50% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 216 18% 20%;
+  --input: 216 18% 20%;
+  --ring: 204 95% 56%;
+  --chart-1: 204 95% 56%;
+  --chart-2: 42 95% 58%;
+  --chart-3: 0 84% 60%;
+  --chart-4: 151 62% 48%;
+  --chart-5: 220 14% 56%;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+  font-feature-settings: "tnum" 1, "ss01" 1;
+}
+
+* {
+  @apply border-border;
+}
+
+.glass-bg {
+  background: radial-gradient(circle at top right, hsl(var(--primary) / 0.18), transparent 35%),
+    radial-gradient(circle at bottom left, hsl(var(--accent) / 0.14), transparent 30%),
+    hsl(var(--background));
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
