@@ -12,6 +12,18 @@ Float is a B2B AI CFO app built with Next.js 14, Supabase, Claude, Stripe, Twili
 4. Run the app:
    - `pnpm dev`
 
+## ElevenLabs Setup
+
+1. Set these vars in `.env.local`:
+   - `ELEVENLABS_API_KEY`
+   - `ELEVENLABS_AGENT_ID`
+   - `ELEVENLABS_AGENT_PHONE_NUMBER_ID`
+   - `ELEVENLABS_WEBHOOK_SECRET`
+2. In ElevenLabs agent settings, configure Post-call Webhook URL:
+   - `https://<your-domain>/api/calls/elevenlabs/webhook`
+3. Use the same webhook signing secret value in ElevenLabs and `ELEVENLABS_WEBHOOK_SECRET`.
+4. Keep `ELEVENLABS_ALLOW_SIMULATION=true` for local fallback, set `false` in production to force live errors.
+
 ## Supabase
 
 1. Apply migrations in `supabase/migrations/`.
@@ -40,5 +52,6 @@ Float is a B2B AI CFO app built with Next.js 14, Supabase, Claude, Stripe, Twili
 - `POST /api/claude/analyze`
 - `POST /api/claude/chat` (SSE)
 - `POST /api/calls/initiate`
+- `POST /api/calls/elevenlabs/webhook`
 - `POST /api/stripe/payment-link`
 - `POST /api/invoices/upload`
